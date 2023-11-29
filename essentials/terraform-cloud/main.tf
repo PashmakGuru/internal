@@ -17,3 +17,4 @@ resource "tfe_organization" "test" {
   name  = var.tfc_organization_name
   email = var.tfc_organization_email
 }
+
