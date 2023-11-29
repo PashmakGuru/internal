@@ -1,18 +1,23 @@
 name: Sync Terraform Cloud
 on:
   push:
-    paths:
-    - 'essentials/terraform-cloud/**'
     branches:
     - 'main'
+    paths:
+      - 'essentials/terraform-cloud/**'
+      - '.github/workflows/terraform-cloud.yaml'
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
     - 'main'
+    paths:
+      - 'essentials/terraform-cloud/**'
+      - '.github/workflows/terraform-cloud.yaml'
+
 
 env:
-  TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
-  TFC_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
+  TF_CLOUD_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+  TF_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
   TF_WORKSPACE: internal
   TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
 
