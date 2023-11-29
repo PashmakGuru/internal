@@ -1,0 +1,27 @@
+name: Sync Terraform Cloud
+on:
+  push:
+    paths:
+    - 'essentials/terraform-cloud/**'
+    branches:
+    - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+    - 'main'
+
+jobs:
+  plan:
+    name: Plan Only
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.6.3"
+        cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+    - run: terraform init
+    - id: plan
+      run: terraform plan -no-color
+    - run: echo ${{ steps.plan.outputs.stdout }}
+    - run: echo ${{ steps.plan.outputs.stderr }}
+    - run: echo ${{ steps.plan.outputs.exitcode }}
