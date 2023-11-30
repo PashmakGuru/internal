@@ -2,12 +2,10 @@ variable "tfc_api_token" {
   type = string
 }
 
-variable "tfc_organization_name" {
+variable "organization_name" {
   type = string
-  default = "PashmakGuru"
 }
 
-variable "tfc_organization_email" {
+variable "organization_email" {
   type = string
-  default = "nasiri.amirreza.96@gmail.com"
 }

@@ -16,10 +16,15 @@ on:
 
 
 env:
-  TF_CLOUD_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
-  TF_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
-  TF_WORKSPACE: internal
-  TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
+    RO_ORG_NAME: ${{ vars.TFC_ORGANIZATION }}-bootstrap
+    RO_WORKSPACE_NAME: remote-operations
+    TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
+    TF_VARS: |
+        {
+            tfc_api_token       = "${{ secrets.TFC_API_TOKEN }}"
+            organization_name   = "${{ vars.TFC_ORGANIZATION }}"
+            organization_email  = "${{ vars.TFC_ORGANIZATION_EMAIL }}"
+        }
 
 jobs:
   terraform-plan:
@@ -28,16 +33,16 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         name: Checkout source code
-
+      - name: Prepare Variables
+        run: echo $TF_VARS > ${{ env.TF_CONFIG_DIRECTORY }}/terraform.tfvars
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: ${{ env.RO_WORKSPACE_NAME }}
           directory: ${{ env.TF_CONFIG_DIRECTORY }}
           speculative: true
 
@@ -45,7 +50,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: plan-run
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: ${{ env.RO_WORKSPACE_NAME }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
 

@@ -13,8 +13,8 @@ provider "tfe" {
   token = var.tfc_api_token
 }
 
-resource "tfe_organization" "test" {
-  name  = var.tfc_organization_name
-  email = var.tfc_organization_email
+resource "tfe_organization" "main" {
+  name  = var.organization_name
+  email = var.organization_email
 }
 
