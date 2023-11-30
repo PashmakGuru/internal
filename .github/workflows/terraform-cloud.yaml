@@ -46,6 +46,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
         with:
+          organization: ${{ env.RO_ORG_NAME }}
           workspace: ${{ env.RO_WORKSPACE_NAME }}
           directory: ${{ env.TF_CONFIG_DIRECTORY }}
           speculative: true
@@ -54,6 +55,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: plan-run
         with:
+          organization: ${{ env.RO_ORG_NAME }}
           workspace: ${{ env.RO_WORKSPACE_NAME }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
@@ -62,4 +64,5 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
         id: plan-output
         with:
+          organization: ${{ env.RO_ORG_NAME }}
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
