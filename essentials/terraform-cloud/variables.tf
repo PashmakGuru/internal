@@ -10,6 +10,6 @@ variable "organization_email" {
   type = string
 }
 
-variable "remote_operations_workflow" {
+variable "remote_operations_workspace" {
   type = string
 }

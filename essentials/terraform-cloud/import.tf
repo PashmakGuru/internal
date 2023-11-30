@@ -4,6 +4,6 @@ import {
 }
 
 import {
-  to = tfe_workflow.remote_operations
-  id = "${var.organization_name}/${var.remote_operations_workflow}"
+  to = tfe_workspace.remote_operations
+  id = "${var.organization_name}/${var.remote_operations_workspace}"
 }

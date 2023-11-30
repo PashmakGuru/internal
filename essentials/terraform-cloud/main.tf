@@ -18,8 +18,8 @@ resource "tfe_organization" "main" {
   email = var.organization_email
 }
 
-resource "tfe_workflow" "remote_operations" {
-  name  = var.remote_operations_workflow
+resource "tfe_workspace" "remote_operations" {
+  name  = var.remote_operations_workspace
   organization = var.organization_name
   description = "This workspace is bootstrapped via GH workflow (bootstrap-terraform-cloud.yaml). It enables us to perform remote operations on TFC and synchronize its resources."
   execution_mode = "remote"
