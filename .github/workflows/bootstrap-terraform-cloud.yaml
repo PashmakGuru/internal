@@ -2,13 +2,11 @@ name: Bootstrap Terraform Cloud
 on: workflow_dispatch
 
 env:
-  TOKEN: ${{ secrets.TFC_API_TOKEN }}
+  TFC_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
   ORG_NAME: ${{ vars.TFC_ORGANIZATION }}-bootstrap
   ORG_EMAIL: nasiri.amirreza.96@gmail.com
   PROJECT_NAME: remote-operations
   WORKSPACE_NAME: remote-operations
-  WORKSPACE_EXECUTION: remote
-  WORKSPACE_DESCRIPTION: This workspace is bootstrapped via GH workflow (bootstrap-terraform-cloud.yaml). It enables us to perform remote operations on TFC and synchronize its resources.
 
 jobs:
   bootstrap-tfe:
@@ -19,95 +17,5 @@ jobs:
     - uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.6.3"
-    - name: Init, Plan and Apply
-      run: |
-        projectId () {
-            return curl \
-            --header "Authorization: Bearer ${{ env.TOKEN }}" \
-            --header "Content-Type: application/vnd.api+json" \
-            https://app.terraform.io/api/v2/organizations/${{ env.ORG_NAME }}/projects \
-            | jq -r '.data[] | select(.attributes.name == "${{ env.PROJECT_NAME }}").id'
-        }
-
-        # 🏢 Check if the organization exists
-        if curl -f -o /dev/null -s --head --request GET \
-            --header "Authorization: Bearer ${{ env.TOKEN }}" \
-            --header "Content-Type: application/vnd.api+json" \
-            https://app.terraform.io/api/v2/organizations/${{ env.ORG_NAME }}/workspaces; then
-            echo "🏢 Organization exists."
-        else
-            echo "🏢 Organization does not exist. Creating..."
-            curl -X POST \
-                --fail \
-                --header "Authorization: Bearer ${{ env.TOKEN }}" \
-                --header "Content-Type: application/vnd.api+json" \
-                https://app.terraform.io/api/v2/organizations \
-                --data @- << REQUEST_BODY
-        {
-            "data": {
-                "type": "organizations",
-                "attributes": {
-                    "name": "${{ env.ORG_NAME }}",
-                    "email": "${{ env.ORG_EMAIL }}"
-                }
-            }
-        }
-        REQUEST_BODY
-        fi
-
-        # 💼 Check if the project exists
-        if [ -z "$(projectId)" ]; then
-            echo "💼 Project does not exist. Creating..."
-            curl -X POST \
-                --fail \
-                --header "Authorization: Bearer ${{ env.TOKEN }}" \
-                --header "Content-Type: application/vnd.api+json" \
-                https://app.terraform.io/api/v2/organizations/${{ env.ORG_NAME }}/projects \
-                --data @- << REQUEST_BODY
-        {
-            "data": {
-                "attributes": {
-                    "name": "${{ env.PROJECT_NAME }}"
-                },
-                "type": "projects"
-            }
-        }
-        REQUEST_BODY
-        else
-            echo "💼 Project exists."
-        fi
-
-        # 📋 Check if the workspace exists
-        if curl -f -o /dev/null -s --head --request GET \
-            --header "Authorization: Bearer ${{ env.TOKEN }}" \
-            --header "Content-Type: application/vnd.api+json" \
-            https://app.terraform.io/api/v2/organizations/${{ env.ORG_NAME }}/workspaces/${{ env.WORKSPACE_NAME }}; then
-            echo "📋 Workspace exists."
-        else
-            echo "📋 Workspace does not exist. Creating..."
-            curl -X POST \
-                --fail \
-                --header "Authorization: Bearer ${{ env.TOKEN }}" \
-                --header "Content-Type: application/vnd.api+json" \
-                https://app.terraform.io/api/v2/organizations/${{ env.ORG_NAME }}/workspaces \
-                --data @- << REQUEST_BODY
-        {
-            "data": {
-                "attributes": {
-                    "name": "${{ env.WORKSPACE_NAME }}",
-                    "execution-mode": "${{ env.WORKSPACE_EXECUTION }}",
-                    "description": "${{ env.WORKSPACE_DESCRIPTION }}"
-                },
-                "relationships": {
-                    "project": {
-                    "data": {
-                        "type": "projects",
-                        "id": "$(projectId)"
-                    }
-                    }
-                }
-                "type": "workspaces"
-            }
-        }
-        REQUEST_BODY
-        fi
+    - name: Bootstrap
+      run: ./hacks/bootstrap-terraform-cloud.sh
