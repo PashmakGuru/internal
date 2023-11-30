@@ -14,33 +14,44 @@ on:
       - 'essentials/terraform-cloud/**'
       - '.github/workflows/terraform-cloud.yaml'
 
-
 env:
     TF_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
-    TF_CLOUD_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}-bootstrap
+    TF_CLOUD_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+    TF_CLOUD_EMAIL: ${{ vars.TFC_ORGANIZATION_EMAIL }}
+    TF_PROJECT: remote-operations
     TF_WORKSPACE: remote-operations
 
     SYNC_TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
-    SYNC_TF_VARS: |
-        {
-            tfc_api_token       = "${{ secrets.TFC_API_TOKEN }}"
-            organization_name   = "${{ vars.TFC_ORGANIZATION }}"
-            organization_email  = "${{ vars.TFC_ORGANIZATION_EMAIL }}"
-        }
+    # SYNC_TF_VARS: |
+    #     {
+    #         tfc_api_token       = "${{ secrets.TFC_API_TOKEN }}"
+    #         organization_name   = "${{ vars.TFC_ORGANIZATION }}"
+    #         organization_email  = "${{ vars.TFC_ORGANIZATION_EMAIL }}"
+    #     }
 
 jobs:
+  remote-operations:
+    name: Prepare Remote Operations
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      name: Checkout source code
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.6.3"
+    - name: Ensure remote-operations exists
+      run: ./hacks/bootstrap-terraform-cloud.sh
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-22.04
+    needs:
+    - remote-operations
     permissions:
       contents: read
       pull-requests: write
-
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         name: Checkout source code
-      - name: Prepare Variables
-        run: echo $TF_VARS > terraform.tfvars
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
