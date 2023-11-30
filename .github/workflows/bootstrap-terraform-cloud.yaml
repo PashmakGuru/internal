@@ -26,16 +26,16 @@ jobs:
             --header "Content-Type: application/vnd.api+json" \
             https://app.terraform.io/api/v2/organizations \
             --data @- << REQUEST_BODY
-            {
-                "data": {
-                "type": "organizations",
-                "attributes": {
-                    "name": "${{ env.ORGAN_NAME }}",
-                    "email": "${{ secrets.ADMIN_EMAIL }}"
-                }
-                }
+        {
+            "data": {
+            "type": "organizations",
+            "attributes": {
+                "name": "${{ env.ORGAN_NAME }}",
+                "email": "${{ secrets.ADMIN_EMAIL }}"
             }
-            REQUEST_BODY
+            }
+        }
+        REQUEST_BODY
         fi
 
         # Check if the workspace exists
@@ -51,14 +51,14 @@ jobs:
             --header "Content-Type: application/vnd.api+json" \
             https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/workspaces \
             --data @- << REQUEST_BODY
-            {
-                "data": {
-                "attributes": {
-                    "name": "${{ env.WORKSPACE_NAME }}",
-                    "execution-mode": "remote"
-                },
-                "type": "workspaces"
-                }
+        {
+            "data": {
+            "attributes": {
+                "name": "${{ env.WORKSPACE_NAME }}",
+                "execution-mode": "remote"
+            },
+            "type": "workspaces"
             }
-            REQUEST_BODY
+        }
+        REQUEST_BODY
         fi
