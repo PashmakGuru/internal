@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Check Organization Existence
       id: checkOrganization
-      continue-on-error: true
+      # continue-on-error: true
       run: |
         curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }} \
           --header "Authorization: Bearer ${{ env.TOKEN }}" \
@@ -40,7 +40,7 @@ jobs:
         REQUEST_BODY
     - name: Check Workspace Existence
       id: checkWorkspace
-      continue-on-error: true
+      # continue-on-error: true
       run: |
         curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/${{ env.WORKSPACE_NAME }} \
           --header "Authorization: Bearer ${{ env.TOKEN }}" \
