@@ -4,7 +4,7 @@ on: workflow_dispatch
 env:
   TFC_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
   ORG_NAME: ${{ vars.TFC_ORGANIZATION }}-bootstrap
-  ORG_EMAIL: nasiri.amirreza.96@gmail.com
+  ORG_EMAIL: ${{ vars.TFC_ORGANIZATION_EMAIL }}
   PROJECT_NAME: remote-operations
   WORKSPACE_NAME: remote-operations
 
