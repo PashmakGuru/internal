@@ -22,7 +22,7 @@ jobs:
         else
             echo "Organization does not exist. Creating..."
             curl -X POST \
-                --fail
+                --fail \
                 --header "Authorization: Bearer ${{ env.TOKEN }}" \
                 --header "Content-Type: application/vnd.api+json" \
                 https://app.terraform.io/api/v2/organizations \
@@ -48,7 +48,7 @@ jobs:
         else
             echo "Workspace does not exist. Creating..."
             curl -X POST \
-                --fail
+                --fail \
                 --header "Authorization: Bearer ${{ env.TOKEN }}" \
                 --header "Content-Type: application/vnd.api+json" \
                 https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/workspaces \
@@ -57,7 +57,8 @@ jobs:
             "data": {
             "attributes": {
                 "name": "${{ env.WORKSPACE_NAME }}",
-                "execution-mode": "remote"
+                "execution-mode": "remote",
+                "description": "This workspace is bootstrapped via GH workflow. It enables us to synchronize TFC resources in other workflows."
             },
             "type": "workspaces"
             }
