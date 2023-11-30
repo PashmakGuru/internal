@@ -19,6 +19,7 @@ jobs:
           --header "Authorization: Bearer ${{ env.TOKEN }}" \
           --header "Content-Type: application/vnd.api+json" \
           --request GET
+          --fail
     - name: Create Default Organization
       if: failure() && steps.checkOrganization.outcome == 'failure'
       run: |
@@ -45,6 +46,7 @@ jobs:
           --header "Authorization: Bearer ${{ env.TOKEN }}" \
           --header "Content-Type: application/vnd.api+json" \
           --request GET
+          --fail
     - name: Create Default Organization
       if: failure() && steps.checkWorkspace.outcome == 'failure'
       run: |
