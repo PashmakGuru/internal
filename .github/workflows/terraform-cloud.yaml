@@ -22,35 +22,35 @@ env:
   TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
 
 jobs:
-    terraform-plan:
-        name: Terraform Plan
-        runs-on: ubuntu-22.04
-        permissions:
-          contents: read
-          pull-requests: write
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
 
-        steps:
-          - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-            name: Checkout source code
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        name: Checkout source code
 
-          - name: Upload Configuration
-            uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-            id: plan-upload
-            with:
-              workspace: ${{ env.TF_WORKSPACE }}
-              directory: ${{ env.TF_CONFIG_DIRECTORY }}
-              speculative: true
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: plan-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.TF_CONFIG_DIRECTORY }}
+          speculative: true
 
-          - name: Create Plan Run
-            uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-            id: plan-run
-            with:
-              workspace: ${{ env.TF_WORKSPACE }}
-              configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-              plan_only: true
+      - name: Create Plan Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        id: plan-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
+          plan_only: true
 
-          - name: Get Plan Output
-            uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
-            id: plan-output
-            with:
-              plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+      - name: Get Plan Output
+        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
+        id: plan-output
+        with:
+          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}

@@ -1,0 +1,67 @@
+name: Bootstrap Terraform Cloud
+on: workflow_dispatch
+
+env:
+  TOKEN: ${{ secrets.TFC_API_TOKEN }}
+  ORGAN_NAME: ${{ vars.TFC_ORGANIZATION }}
+  WORKSPACE_NAME: internal
+
+jobs:
+  bootstrap-tfe:
+    name: Bootstrap Terraform Cloud
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Check Organization Existence
+      id: checkOrganization
+      continue-on-error: true
+      run: |
+        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }} \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --header "Content-Type: application/vnd.api+json" \
+          --request GET
+    - name: Create Default Organization
+      if: failure() && steps.checkOrganization.outcome == 'failure'
+      run: |
+        curl https://app.terraform.io/api/v2/organizations \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --header "Content-Type: application/vnd.api+json" \
+          --request POST \
+          --data @- << REQUEST_BODY
+          {
+            "data": {
+              "type": "organizations",
+              "attributes": {
+                "name": "${{ env.ORGAN_NAME }}",
+                "email": "nasiri.amirreza.96@gmail.com"
+              }
+            }
+          }
+        REQUEST_BODY
+    - name: Check Workspace Existence
+      id: checkWorkspace
+      continue-on-error: true
+      run: |
+        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/${{ env.WORKSPACE_NAME }} \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --header "Content-Type: application/vnd.api+json" \
+          --request GET
+    - name: Create Default Organization
+      if: failure() && steps.checkWorkspace.outcome == 'failure'
+      run: |
+        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }} \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --header "Content-Type: application/vnd.api+json" \
+          --request POST \
+          --data @- << REQUEST_BODY
+        {
+          "data": {
+            "attributes": {
+              "name": "${{ env.WORKSPACE_NAME }}",
+              "execution-mode": "remote",
+            },
+            "type": "workspaces"
+          }
+        }
+        REQUEST_BODY
+
+
