@@ -17,12 +17,10 @@ jobs:
         terraform_version: "1.6.3"
     - name: Init, Plan and Apply
       run: |
+        export TF_VAR_tfc_api_token=${{ env.TOKEN }}
+        export TF_VAR_organization_name=${{ env.ORG_NAME }}
+        export TF_VAR_organization_email=${{ env.ORG_EMAIL }}
         cd terraform-modules/tfc-bootstrap
-        cat << EOF > terraform.tfvars
-        api_token="${{ env.TOKEN }}"
-        organization_name="${{ env.ORG_NAME }}"
-        organization_email="${{ env.ORG_EMAIL }}"
-        EOF
         terraform init
         terraform plan
         terraform apply
