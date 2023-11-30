@@ -1,4 +1,4 @@
-variable "api_token" {
+variable "tfc_api_token" {
   type = string
   description = "TFC Personal Access Token to use for bootstrapping"
 }
