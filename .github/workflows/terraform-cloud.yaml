@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         name: Checkout source code
       - name: Prepare Variables
-        run: echo $TF_VARS > ${{ env.SYNC_TF_CONFIG_DIRECTORY }}/terraform.tfvars
+        run: echo $TF_VARS > terraform.tfvars
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
