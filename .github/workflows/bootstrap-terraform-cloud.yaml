@@ -11,59 +11,54 @@ jobs:
     name: Bootstrap Terraform Cloud
     runs-on: ubuntu-22.04
     steps:
-    - name: Check Organization Existence
-      id: checkOrganization
-      # continue-on-error: true
+    - name: Bootstrap Organization and Workspace
       run: |
-        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }} \
-          --header "Authorization: Bearer ${{ env.TOKEN }}" \
-          --header "Content-Type: application/vnd.api+json" \
-          --request GET
-          --fail
-    - name: Create Default Organization
-      if: failure() && steps.checkOrganization.outcome == 'failure'
-      run: |
-        curl https://app.terraform.io/api/v2/organizations \
-          --header "Authorization: Bearer ${{ env.TOKEN }}" \
-          --header "Content-Type: application/vnd.api+json" \
-          --request POST \
-          --data @- << REQUEST_BODY
-          {
-            "data": {
-              "type": "organizations",
-              "attributes": {
-                "name": "${{ env.ORGAN_NAME }}",
-                "email": "nasiri.amirreza.96@gmail.com"
-              }
+        # Check if the organization exists
+        if curl -f -o /dev/null -s --head --request GET \
+            --header "Authorization: Bearer ${{ secrets.TOKEN }}" \
+            --header "Content-Type: application/vnd.api+json" \
+            https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/workspaces; then
+            echo "Organization exists."
+        else
+            echo "Organization does not exist. Creating..."
+            curl -X POST \
+            --header "Authorization: Bearer ${{ secrets.TOKEN }}" \
+            --header "Content-Type: application/vnd.api+json" \
+            https://app.terraform.io/api/v2/organizations \
+            --data @- << REQUEST_BODY
+            {
+                "data": {
+                "type": "organizations",
+                "attributes": {
+                    "name": "${{ env.ORGAN_NAME }}",
+                    "email": "${{ secrets.ADMIN_EMAIL }}"
+                }
+                }
             }
-          }
-        REQUEST_BODY
-    - name: Check Workspace Existence
-      id: checkWorkspace
-      # continue-on-error: true
-      run: |
-        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/${{ env.WORKSPACE_NAME }} \
-          --header "Authorization: Bearer ${{ env.TOKEN }}" \
-          --header "Content-Type: application/vnd.api+json" \
-          --request GET
-          --fail
-    - name: Create Default Organization
-      if: failure() && steps.checkWorkspace.outcome == 'failure'
-      run: |
-        curl https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }} \
-          --header "Authorization: Bearer ${{ env.TOKEN }}" \
-          --header "Content-Type: application/vnd.api+json" \
-          --request POST \
-          --data @- << REQUEST_BODY
-        {
-          "data": {
-            "attributes": {
-              "name": "${{ env.WORKSPACE_NAME }}",
-              "execution-mode": "remote",
-            },
-            "type": "workspaces"
-          }
-        }
-        REQUEST_BODY
+            REQUEST_BODY
+        fi
 
-
+        # Check if the workspace exists
+        if curl -f -o /dev/null -s --head --request GET \
+            --header "Authorization: Bearer ${{ secrets.TOKEN }}" \
+            --header "Content-Type: application/vnd.api+json" \
+            https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/workspaces/${{ env.WORKSPACE_NAME }}; then
+            echo "Workspace exists."
+        else
+            echo "Workspace does not exist. Creating..."
+            curl -X POST \
+            --header "Authorization: Bearer ${{ secrets.TOKEN }}" \
+            --header "Content-Type: application/vnd.api+json" \
+            https://app.terraform.io/api/v2/organizations/${{ env.ORGAN_NAME }}/workspaces \
+            --data @- << REQUEST_BODY
+            {
+                "data": {
+                "attributes": {
+                    "name": "${{ env.WORKSPACE_NAME }}",
+                    "execution-mode": "remote"
+                },
+                "type": "workspaces"
+                }
+            }
+            REQUEST_BODY
+        fi
