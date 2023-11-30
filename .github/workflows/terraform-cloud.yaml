@@ -16,8 +16,11 @@ on:
 
 
 env:
+    TF_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
+
     RO_ORG_NAME: ${{ vars.TFC_ORGANIZATION }}-bootstrap
     RO_WORKSPACE_NAME: remote-operations
+
     TF_CONFIG_DIRECTORY: ./essentials/terraform-cloud
     TF_VARS: |
         {
@@ -33,6 +36,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         name: Checkout source code
