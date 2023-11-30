@@ -9,3 +9,7 @@ variable "organization_name" {
 variable "organization_email" {
   type = string
 }
+
+variable "remote_operations_workflow" {
+  type = string
+}
