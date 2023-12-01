@@ -41,8 +41,8 @@ jobs:
         terraform_version: "1.6.3"
     - name: Ensure remote-operations exists
       run: ./hacks/bootstrap-terraform-cloud.sh
-  terraform-plan:
-    name: Terraform Plan
+  terraform-apply:
+    name: Terraform Plan & Apply
     runs-on: ubuntu-22.04
     needs:
     - remote-operations
@@ -54,22 +54,23 @@ jobs:
         name: Checkout source code
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: plan-upload
+        id: upload-configuration
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.SYNC_TF_CONFIG_DIRECTORY }}
-          speculative: true
-
       - name: Create Plan Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
+        id: create-run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan_only: true
-
+          configuration_version: ${{ steps.upload-configuration.outputs.configuration_version_id }}
       - name: Get Plan Output
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
         id: plan-output
         with:
-          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+          plan: ${{ fromJSON(steps.create-run.outputs.payload).data.relationships.plan.data.id }}
+      - uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.1.1
+        id: apply
+        with:
+          run: ${{ steps.create-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
