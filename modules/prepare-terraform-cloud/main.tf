@@ -16,6 +16,8 @@ provider "tfe" {
 resource "tfe_organization" "main" {
   name  = var.organization_name
   email = var.organization_email
+  cost_estimation_enabled = true
+  allow_force_delete_workspaces = false
 }
 
 resource "tfe_workspace" "remote_operations" {
