@@ -1,9 +1,10 @@
 #!/bin/bash
 #
-# Bootstrap Terraform Cloud
-# Create an organization, project, and workflow that's designed to
-# enable our other TFC codes to apply, i.e. it makes us able to
-# manage the real organization and projcet via tfc_* modules.
+# Create AzureRM Credentials for Terraform Cloud
+# This script automates the setup of a service principal in Azure, which is used by Terraform Cloud.
+# It checks for necessary prerequisites (Azure CLI, jq), creates a service principal, assigns it a role,
+# and outputs the credentials. These credentials are to be added to Terraform Cloud's variable set for
+# managing Azure resources.
 
 set -euo pipefail
 
