@@ -10,6 +10,7 @@ set -euo pipefail
 
 sp_name="terraform-cloud"
 sp_role="Contributor"
+sp_role="Owner"
 
 check_prequestics() {
     if ! command -v az > /dev/null; then
@@ -44,6 +45,12 @@ create_and_report() {
     fi
 
     creds=$(az ad sp create-for-rbac --name $sp_name --role $sp_role --scopes "/subscriptions/$subscription" --only-show-errors -o json)
+
+    az ad app permission grant \
+        --id "$(echo $creds | jq -r -e '.appId')" \
+        --api "00000003-0000-0000-c000-000000000000" \
+        --scope "Directory.ReadWrite.All" \
+        --consent-type "AllPrincipals" > /dev/null
 
     cat << INFO
 
