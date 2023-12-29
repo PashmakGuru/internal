@@ -11,6 +11,11 @@ set -euo pipefail
 sp_name="terraform-cloud"
 sp_role="Owner"
 
+list_subscriptions() {
+    echo "Your authenticated subscriptions:"
+    az account list | jq -r "map({id, name}) | .[] | [.id, .name] | @tsv" | column -ts $'\t'
+}
+
 check_prequestics() {
     if ! command -v az > /dev/null; then
         echo "📛 Azure CLI is not installed."
@@ -67,6 +72,8 @@ INFO
 
 main() {
     check_prequestics
+    list_subscriptions
+    echo ""
     read -p "Azure Subscription ID: " subscription
     create_and_report
 }
