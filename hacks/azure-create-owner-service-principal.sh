@@ -9,7 +9,6 @@
 set -euo pipefail
 
 sp_name="terraform-cloud"
-sp_role="Contributor"
 sp_role="Owner"
 
 check_prequestics() {
