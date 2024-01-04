@@ -1,10 +1,12 @@
 #!/bin/bash
 #
-# Create AzureRM Credentials for Terraform Cloud
-# This script automates the setup of a service principal in Azure, which is used by Terraform Cloud.
-# It checks for necessary prerequisites (Azure CLI, jq), creates a service principal, assigns it a role,
-# and outputs the credentials. These credentials are to be added to Terraform Cloud's variable set for
-# managing Azure resources.
+# Azure Terraform Service Principal Setup
+#
+# This script automates the setup of a service principal in Azure for Terraform Cloud.
+# It lists Azure subscriptions, checks for Azure CLI and jq, and creates or renews a
+# service principal with Owner role.
+# Additionally, it grants permissions and outputs environment variables for Terraform Cloud's
+# 'remote-operations' workspace, streamlining Azure configurations.
 
 set -euo pipefail
 

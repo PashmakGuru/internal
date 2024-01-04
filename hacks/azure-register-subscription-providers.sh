@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+# Azure Register Subscription Providers
+#
+# This bash script automates the registration of crucial Azure service providers
+# like Compute, KeyVault, ContainerService, and CDN for a selected subscription.
+# It checks Azure CLI installation, lists subscriptions, and ensures provider
+# readiness, simplifying Azure environment configurations.
 
 set -euo pipefail
 

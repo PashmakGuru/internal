@@ -1,13 +1,22 @@
 #!/bin/bash
 #
-# Bootstrap Terraform Cloud
-# Create an organization, project, and workflow that's designed to
-# enable our other TFC codes to apply, i.e. it makes us able to
-# manage the real organization and projcet via tfc_* modules.
+# Terraform Cloud Initialization Script
+#
+# This script simplifies setting up Terraform Cloud by automatically
+# creating an organization, project, and workspace.
+# It checks and requires environment variables like TF_API_TOKEN and
+# TF_CLOUD_ORGANIZATION, streamlining the initial configuration process
+# for Terraform Cloud environments.
 
 set -euo pipefail
 
-required_envs=("TF_API_TOKEN" "TF_CLOUD_ORGANIZATION" "TF_CLOUD_EMAIL", "TF_PROJECT", "TF_WORKSPACE")
+required_envs=(
+  "TF_API_TOKEN"
+  "TF_CLOUD_ORGANIZATION"
+  "TF_CLOUD_EMAIL"
+  "TF_PROJECT"
+  "TF_WORKSPACE"
+)
 
 check_required_envs() {
     for var in "${env_vars[@]}"; do
