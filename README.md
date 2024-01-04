@@ -1,6 +1,9 @@
 # Platform: Internal
 
 ## Overview
+
+[![Terraform Cloud](https://github.com/PashmakGuru/platform-internals/actions/workflows/terraform-cloud.yaml/badge.svg)](https://github.com/PashmakGuru/platform-internals/actions/workflows/terraform-cloud.yaml)
+
 This repository is dedicated to bootstrapping and managing the underlying infrastructure of our platforms. It includes tasks such as:
 
 - [x] Bootstrapping Azure subscriptions
