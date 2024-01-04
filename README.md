@@ -1,4 +1,4 @@
-# Platform: Internal
+# Platform: Internals
 
 ## Overview
 
