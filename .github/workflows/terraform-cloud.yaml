@@ -1,4 +1,4 @@
-name: Sync Terraform Cloud
+name: "Terraform Cloud"
 on:
   push:
     branches:
