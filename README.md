@@ -11,6 +11,7 @@ This repository is dedicated to bootstrapping and managing the infrastructure pr
 - [ ] Managing GitHub repositories
 - [ ] Distributing credentials among repositories
 - [ ] Managing Terraform Cloud organization, projects, workspaces, variable-sets, and custom modules
+- [ ] Manage Port IDP blueprints, actions, etc.
 
 ### Sequence of Bootstrapping
 ```mermaid
@@ -34,12 +35,14 @@ sequenceDiagram
     participant RPI as platform-internals
     participant TFC as Terraform Cloud
     participant GHB as GitHub
+    participant PRT as Port IDP
 
     loop Updating Infrastructure Prerequisites
         PLA ->> RPI: Push changes to<br>`modules/infrastructure-prerequisites`
         RPI ->> TFC: Plan and run Terraform<br>Triggered by `terraform-cloud.yaml` workflow
         TFC ->> TFC: Change to desired state
         TFC ->> GHB: Change to desired state
+        TFC ->> PRT: Change to desired state
     end
 ```
 
@@ -52,7 +55,7 @@ The repository contains several scripts and modules designed to automate and sim
 - [hacks/terraform-cloud-bootstrap.sh](hacks/terraform-cloud-bootstrap.sh): Runned through workflow, it automates the initial setup of Terraform Cloud to avoid chicken-and-egg problem with Terraform Cloud managing itself.
 
 ### Modules
-- [modules/infrastructure-prerequisites](modules/infrastructure-prerequisites) (TODO): Manages Terraform Cloud configurations and GitHub repositories.
+- [modules/infrastructure-prerequisites](modules/infrastructure-prerequisites) (TODO): Manages Terraform Cloud configurations, GitHub repositories, and Port IDP.
 
 ### Workflows
 - [terraform-cloud.yaml](.github/workflows/terraform-cloud.yaml): Bootstrap remote-operations workspace and syncs [modules/infrastructure-prerequisites](modules/infrastructure-prerequisites).
