@@ -14,16 +14,12 @@ This repository is dedicated to bootstrapping and managing the infrastructure pr
 
 ### Bootstrapping Sequence
 ```mermaid
-info
-```
-
-```mermaid
 sequenceDiagram
     actor PLA as Platform Admin
     participant RPI as platform-internals
     participant AZR as Azure
     participant TFC as Terraform Cloud
-    
+
     PLA ->> RPI: Fetch scripts
     PLA ->> AZR: Run `azure-register-subscription-providers.sh`<br>Enable required Azure providers such as Compute
     PLA ->> AZR: Run `azure-create-terraform-service-principal.sh`<br>Create a Service Principal for `terraform-operations`
