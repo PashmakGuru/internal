@@ -14,6 +14,10 @@ This repository is dedicated to bootstrapping and managing the infrastructure pr
 
 ### Bootstrapping Sequence
 ```mermaid
+info
+```
+
+```mermaid
 sequenceDiagram
     actor PLA as Platform Admin
     participant RPI as platform-internals
@@ -34,7 +38,7 @@ sequenceDiagram
     participant TFC as Terraform Cloud
     participant GHB as GitHub
 
-    loop Update Infrastructure Prerequisites
+    loop Updating Infrastructure Prerequisites
         PLA ->> RPI: Push changes to<br>`modules/infrastructure-prerequisites`
         RPI ->> TFC: Plan and run Terraform<br>Triggered by `terraform-cloud.yaml` workflow
         TFC ->> TFC: Change to desired state
