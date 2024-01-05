@@ -12,7 +12,7 @@ This repository is dedicated to bootstrapping and managing the infrastructure pr
 - [ ] Distributing credentials among repositories
 - [ ] Managing Terraform Cloud organization, projects, workspaces, variable-sets, and custom modules
 
-### Bootstrapping Sequence
+### Sequence of Bootstrapping
 ```mermaid
 sequenceDiagram
     actor PLA as Platform Admin
@@ -27,7 +27,7 @@ sequenceDiagram
     PLA ->> TFC: Add SP credentials as `remote-operations` secrets
 ```
 
-### Synchronizing Infrastructure Prerequisites
+### Sequence of Synchronizing Infrastructure Prerequisites
 ```mermaid
 sequenceDiagram
     actor PLA as Platform Engineers
